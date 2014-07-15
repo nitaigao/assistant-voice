@@ -1,11 +1,9 @@
- var say = require('say'),
-     express = require('express');
+ var say      = require('say'),
+     settings = require('env-settings'),
+     faye     = require('faye');
 
-var app = express();
-
-app.get('/', function(req, res){
-  say.speak('Samantha', req.query.say);
-  res.send(req.query.say);
-});
-
-app.listen(4000);
+ var client = new faye.Client(settings.detection + '/');
+ client.subscribe('/responses', function(message) {
+   console.log("Saying: " + message);
+   say.speak('Samantha', message);
+ });
